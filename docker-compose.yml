@@ -1,0 +1,52 @@
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: stibodx_mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_DATABASE: stibodx_db
+      MYSQL_USER: stibo_user
+      MYSQL_PASSWORD: stibo_password
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 5s
+      retries: 10
+    networks:
+      - stibodx_network
+
+  user-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: stibodx_app
+    environment:
+      QUARKUS_DATASOURCE_JDBC_URL: jdbc:mysql://mysql:3306/stibodx_db
+      QUARKUS_DATASOURCE_USERNAME: stibo_user
+      QUARKUS_DATASOURCE_PASSWORD: stibo_password
+      QUARKUS_DATASOURCE_DB_KIND: mysql
+      QUARKUS_PROFILE: dev
+      JAVA_ENABLE_DEBUG: "true"
+      JAVA_DEBUG_PORT: "0.0.0.0:5005"
+      QUARKUS_HTTP_HOST: "0.0.0.0"
+      JAVA_TOOL_OPTIONS: "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005"
+    ports:
+      - "8080:8080"
+      - "5005:5005"
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - stibodx_network
+
+volumes:
+  mysql_data:
+
+networks:
+  stibodx_network:
+    driver: bridge
+

@@ -1,0 +1,36 @@
+# Git
+.git
+.gitignore
+.gitattributes
+
+# IDE
+.idea
+.vscode
+*.iml
+*.iws
+*.ipr
+
+# Build
+target
+.mvn
+mvnw
+mvnw.cmd
+
+# Documentation
+*.md
+QUICKSTART.md
+README.md
+
+# Docker
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Misc
+.env
+.env.local
+

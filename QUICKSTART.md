@@ -32,6 +32,7 @@ make docker-logs              # View logs
 ### 1. Create a user
 curl -X POST http://localhost:8080/api/users/create \
 -H "Content-Type: application/json" \
+-H 'Authorization: Bearer token-123' \
 -d '{
 "email":"new@example.com",
 "firstName":"John",
@@ -40,17 +41,24 @@ curl -X POST http://localhost:8080/api/users/create \
 }'
 
 ### 2. List all users
-curl http://localhost:8080/api/users/all
+curl http://localhost:8080/api/users \
+-H "Content-Type: application/json" \
+-H 'Authorization: Bearer token-123' 
 
 ### 3. Get user by ID
 curl http://localhost:8080/api/users/1
+-H "Content-Type: application/json" \
+-H 'Authorization: Bearer token-123'
 
 ### 4. Get user by email
 curl http://localhost:8080/api/users/email/new@example.com
+-H "Content-Type: application/json" \
+-H 'Authorization: Bearer token-123' 
 
 ### 5. Update user
 curl -X PUT http://localhost:8080/api/users/1 \
 -H "Content-Type: application/json" \
+-H 'Authorization: Bearer token-123' \
 -d '{
 "firstName":"John Carlos",
 "lastName":"Doe Smith"
@@ -58,6 +66,8 @@ curl -X PUT http://localhost:8080/api/users/1 \
 
 ### 6. Delete user
 curl -X DELETE http://localhost:8080/api/users/1
+-H "Content-Type: application/json" \
+-H 'Authorization: Bearer token-123' 
 
 ---
 

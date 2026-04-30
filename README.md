@@ -159,6 +159,7 @@ GET /q/health
 #### Create User
 ```bash
 POST /api/users
+Authorization: Bearer token-123
 Content-Type: application/json
 
 {
@@ -167,6 +168,12 @@ Content-Type: application/json
   "lastname": "Doe",
   "password": "SecurePass123"
 }
+
+# cURL Example
+curl -X POST http://localhost:8080/api/users \
+  -H "Authorization: Bearer token-123" \
+  -H "Content-Type: application/json" \
+  -d '{"email":"john.doe@example.com","firstName":"John","lastName":"Doe","password":"SecurePass123"}'
 
 # Response: 201 Created
 {
@@ -182,6 +189,11 @@ Content-Type: application/json
 #### Get User by ID
 ```bash
 GET /api/users/{id}
+Authorization: Bearer token-123
+
+# cURL Example
+curl -X GET http://localhost:8080/api/users/1 \
+  -H "Authorization: Bearer token-123"
 
 # Response: 200 OK
 {
@@ -194,6 +206,11 @@ GET /api/users/{id}
 #### Get User by Email
 ```bash
 GET /api/users/email/{email}
+Authorization: Bearer token-123
+
+# cURL Example
+curl -X GET http://localhost:8080/api/users/email/john.doe@example.com \
+  -H "Authorization: Bearer token-123"
 
 # Response: 200 OK
 ```
@@ -201,6 +218,11 @@ GET /api/users/email/{email}
 #### List All Users
 ```bash
 GET /api/users
+Authorization: Bearer token-123
+
+# cURL Example
+curl -X GET http://localhost:8080/api/users \
+  -H "Authorization: Bearer token-123"
 
 # Response: 200 OK
 [{...}, {...}]
@@ -209,6 +231,7 @@ GET /api/users
 #### Update User
 ```bash
 PUT /api/users/{id}
+Authorization: Bearer token-123
 Content-Type: application/json
 
 {
@@ -216,12 +239,23 @@ Content-Type: application/json
   "lastname": "Smith"
 }
 
+# cURL Example
+curl -X PUT http://localhost:8080/api/users/1 \
+  -H "Authorization: Bearer token-123" \
+  -H "Content-Type: application/json" \
+  -d '{"firstName":"Jane","lastName":"Smith"}'
+
 # Response: 200 OK
 ```
 
 #### Delete User
 ```bash
 DELETE /api/users/{id}
+Authorization: Bearer token-123
+
+# cURL Example
+curl -X DELETE http://localhost:8080/api/users/1 \
+  -H "Authorization: Bearer token-123"
 
 # Response: 204 No Content
 ```
@@ -253,14 +287,38 @@ mvn test jacoco:report
 
 ## 🔐 Security Considerations
 
+- ✅ **Bearer Token Authentication** - All protected endpoints require `Authorization: Bearer` header
 - ✅ Input validation on all endpoints
 - ✅ Business rule validation in domain layer
 - ✅ Centralized exception handling
 - ✅ CORS configuration available
 
+### Authentication
+
+All API endpoints (except `/q/health`) require Bearer token authentication:
+
+**Configuration** (`application.properties`):
+```properties
+quarkus.api.token=token-123
+```
+
+**Required Header:**
+```
+Authorization: Bearer token-123
+```
+
+**Example Request:**
+```bash
+curl -X POST http://localhost:8080/api/users \
+  -H "Authorization: Bearer token-123" \
+  -H "Content-Type: application/json" \
+  -d '{"email":"user@example.com","firstName":"John","lastName":"Doe","password":"pass123"}'
+```
+
 **Future Improvements:**
-- [ ] JWT Authentication
+- [ ] JWT Authentication with expiration
 - [ ] Role-based Access Control (RBAC)
+- [ ] OAuth2 Integration
 - [ ] Audit logging
 
 ## 📊 Architecture Design
@@ -295,6 +353,9 @@ Configure in `application.properties`:
 ```properties
 quarkus.log.level=INFO
 quarkus.log.category."com.stibodx".level=DEBUG
+
+# Security - Bearer Token (required for all endpoints except /q/health)
+app.security.bearer-token=token-123
 ```
 
 ## 🐳 Docker
